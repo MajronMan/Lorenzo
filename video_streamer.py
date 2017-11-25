@@ -24,3 +24,4 @@ def read_period(period, fps):
 def quit_video():
     capture.release()
     cv2.destroyAllWindows()
+
