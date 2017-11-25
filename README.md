@@ -1,2 +1,2 @@
-# Loernzo
+# Lorenzo
 Real time video auralizer
