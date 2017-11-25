@@ -4,7 +4,7 @@ import pygame.midi
 
 class Player:
     def init(self):
-        self.active_note = None
+        self.active_note = (-1, -1)
         pygame.midi.init()
         self.player = pygame.midi.Output(1)
         self.player.set_instrument(0, 0)
