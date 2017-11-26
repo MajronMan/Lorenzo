@@ -5,7 +5,7 @@ import filters
 
 capture = cv2.VideoCapture(0)
 
-CURRENT_FILTER = "BLUR"
+
 
 def read_stream():
     frame = capture.read()[1]
@@ -27,4 +27,3 @@ def read_period(period, fps):
 def quit_video():
     capture.release()
     cv2.destroyAllWindows()
-
