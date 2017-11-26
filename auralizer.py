@@ -8,10 +8,11 @@ import colorsys
 import time
 
 SAMPLE_LEN = 1024
-MAX_PIXEL_DELTA = 3 * 256
+MAX_PIXEL_DELTA = np.sqrt(3) * 256
 prev_frame = None
-CURRENT_SCALE = "gypsy"
+CURRENT_SCALE = "major"
 BASE_SOUND = 44
+
 
 def octave(x):
     return BASE_SOUND + (x % 4) * 12
@@ -24,8 +25,10 @@ scales = {
     "phrygian": [0, 1, 4, 5, 7, 8, 10, 12]
 }
 
+
 def scale_in_octave(x):
     return np.array(scales[CURRENT_SCALE]) + x
+
 
 rhythms = [
     [1, 0.5, 0.5, 1, 0.25, 0.25, 0.5],
@@ -64,6 +67,10 @@ def gram(x):
     return frobenius(np.transpose(x, (1, 0, 2)), x)
 
 
+def pixel_val(pixel, range):
+    return int(range * np.sqrt(pixel[0] ** 2 + pixel[1] ** 2 + pixel[2] ** 2) / MAX_PIXEL_DELTA)
+
+
 def auralize(video_data, prev_frame):
     if prev_frame is None:
         prev_frame = np.zeros(video_data.shape)
@@ -83,4 +90,5 @@ def auralize(video_data, prev_frame):
     volume = saturation
     s = get_sound(color_count)
     r = random.Random()
-    return [(scale_in_octave(s)[r.randint(0, 7)], volume, rhythms[diff%len(rhythms)][i]) for i in range(len(rhythms))]
+    rh = diff % len(rhythms)
+    return [(scale_in_octave(s), random.randint(0, 7), volume, rhythms[rh][i]) for i in range(len(rhythms[rh]))]
