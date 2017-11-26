@@ -49,29 +49,14 @@ class AudioPlayer:
                 self.player.note_on(pitch, vol)
             self.active_chord = (pitches, volume)
 
-    def quit(self):
-        del self.player
-        pygame.midi.quit()
+    def play_random_chords(self, notes):
+        for (scale, i0, volume, duration) in notes:
+            pitches = [scale[i0]]
+            r = random.Random()
+            for i in range(1, 4):
+                if random.random() < (0.2) ** i:
+                    pitches.append(scale[(i0 + i) % len(scale)])
+            self.play_chord(pitches, volume)
+            time.sleep(duration * 60 / AudioPlayer.BPM)
 
-
-player = AudioPlayer()
-
-
-def play(notes):
-    for (scale, i0, volume, duration) in notes:
-        pitches = [scale[i0]]
-        r = random.Random()
-        for i in range(1, 4):
-            if random.random() < (0.2) ** i:
-                pitches.append(scale[(i0 + i) % len(scale)])
-        player.play_chord(pitches, volume)
-        time.sleep(duration * 60 / BPM)
-
-#
-# def play_note(pitch, volume, duration):
-#     player.play(pitch, volume)
-
-
-def init():
-    player.init()
 
