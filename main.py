@@ -21,12 +21,13 @@ def auralizer_thread(frame, cont):
         video_data = frame[0]
         audio_data = auralizer.auralize(video_data, prev_frame)
         print(audio_data)
-        audio_player.play(*audio_data)
+        audio_player.play(audio_data)
         prev_frame = video_data
         time.sleep(max(0, DELTA - (time.time() - t0)))
 
 
-DELTA = 0.25
+DELTA = audio_player.METRUM * 60/ audio_player.BPM
+
 if __name__ == "__main__":
     audio_player.init()
     prev_frame = None
