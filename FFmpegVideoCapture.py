@@ -1,5 +1,6 @@
 import os
 import subprocess
+
 import numpy as np
 
 
@@ -16,7 +17,8 @@ class FFmpegVideoCapture:
         self.px_per_frame = width * height * 3
 
         self.dev_null = open(os.devnull, 'w')
-        ffmpeg_command = ["D:/Portable/ffmpeg-20171123-a60b242-win64-static/bin/ffmpeg.exe", '-i', source, "-f",
+        ffmpeg_command = ["C:/Users/MajronMan/Downloads/ffmpeg-20171123-a60b242-win64-static/bin/ffmpeg.exe", '-i',
+                          source, "-f",
                           "rawvideo", "-pix_fmt", mode, "-"]
 
         self.ffmpeg = subprocess.Popen(ffmpeg_command, stdout=subprocess.PIPE, stderr=self.dev_null)

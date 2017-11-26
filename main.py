@@ -3,11 +3,10 @@ import time
 
 import cv2
 
-from AudioPlayer import AudioPlayer
 import auralizer
 import filters
+from AudioPlayer import AudioPlayer
 from MotionFilter import MotionFilter
-from VideoStream import VideoStream
 from XiaoYiActionCamera import XiaoYiActionCamera
 
 CURRENT_FILTER = "BLUR"
@@ -47,7 +46,8 @@ if __name__ == "__main__":
     prev_frame = None
     cont = [True]
 
-    video_stream = VideoStream(cv2.VideoCapture(0))
+    video_stream = XiaoYiActionCamera().open_stream()
+    # video_stream = VideoStream(cv2.VideoCapture(0))
     frame = video_stream.read_frame()
     filters.registerMotionFilter(MotionFilter(frame.shape))
 

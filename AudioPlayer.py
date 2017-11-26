@@ -1,12 +1,11 @@
-import random
+import time
 
 import pygame
 import pygame.midi
-import time
 
 
 class AudioPlayer:
-    BPM = 80
+    BPM = 110
 
     def __init__(self):
         self.active_note = None

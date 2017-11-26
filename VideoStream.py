@@ -1,5 +1,6 @@
 import time
 
+import imutils
 import numpy as np
 
 
@@ -8,7 +9,7 @@ class VideoStream:
         self.video_capture = video_capture
 
     def read_frame(self):
-        return self.video_capture.read()[1]
+        return imutils.resize(self.video_capture.read()[1], width=800)
 
     def read_period(self, period, fps):
         frames = int(fps * period)
