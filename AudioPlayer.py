@@ -6,15 +6,14 @@ import time
 
 
 class AudioPlayer:
-    BPM = 120
-    METRUM = 4
+    BPM = 60
 
     def __init__(self):
         self.active_note = None
 
         pygame.midi.init()
         self.player = pygame.midi.Output(1)
-        self.player.set_instrument(81)
+        self.player.set_instrument(1)
 
         self.active_chord = None
 
@@ -39,6 +38,7 @@ class AudioPlayer:
     def play_chord(self, pitches, volume):
         if self.active_chord is None:
             self.active_chord = (pitches, volume)
+            self.active_note = (pitches[0], volume)
             for pitch in pitches:
                 self.player.note_on(pitch, volume)
         else:
@@ -49,14 +49,9 @@ class AudioPlayer:
                 self.player.note_on(pitch, vol)
             self.active_chord = (pitches, volume)
 
-    def play_random_chords(self, notes):
-        for (scale, i0, volume, duration) in notes:
-            pitches = [scale[i0]]
-            r = random.Random()
-            for i in range(1, 4):
-                if random.random() < (0.2) ** i:
-                    pitches.append(scale[(i0 + i) % len(scale)])
+
+
+    def play_multiple_chords(self, notes):
+        for (pitches, volume, duration) in notes:
             self.play_chord(pitches, volume)
             time.sleep(duration * 60 / AudioPlayer.BPM)
-
-

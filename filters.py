@@ -11,7 +11,6 @@ def six_colours(frame):
     kernel1 = np.ones((5, 5), np.uint8)
     return cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel1)
 
-
 def blur(frame):
     kernel = np.ones((5, 5)) / 25
     return cv2.filter2D(frame, -1, kernel)
