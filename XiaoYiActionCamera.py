@@ -5,13 +5,11 @@ import threading
 from FFmpegVideoCapture import FFmpegVideoCapture
 from VideoStream import VideoStream
 
-camaddr = "192.168.42.1"
-
 
 class XiaoYiActionCamera:
     STREAM_URL = 'rtsp://%s:554/live'
 
-    DEFAULT_ADDRESS = '192.168.42.1'
+    DEFAULT_IP_ADDRESS = '192.168.42.1'
     DEFAULT_PORT = 7878
 
     DEFAULT_STREAM_WIDTH = 640
@@ -19,17 +17,17 @@ class XiaoYiActionCamera:
 
     def __init__(
             self,
-            stream_address=DEFAULT_ADDRESS,
+            ip_address=DEFAULT_IP_ADDRESS,
             stream_width=DEFAULT_STREAM_WIDTH,
             stream_height=DEFAULT_STREAM_HEIGHT
     ):
-        self.camera_address = stream_address
+        self.ip_address = ip_address
         self.stream_width = stream_width
         self.stream_height = stream_height
 
     def open_stream(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.connect((self.camera_address, XiaoYiActionCamera.DEFAULT_PORT))
+        server.connect((self.ip_address, XiaoYiActionCamera.DEFAULT_PORT))
 
         server.send(b'{"msg_id":257,"token":0}')
 
@@ -54,7 +52,7 @@ class XiaoYiActionCamera:
         drain.start()
 
         return VideoStream(FFmpegVideoCapture(
-            XiaoYiActionCamera.STREAM_URL % self.camera_address,
+            XiaoYiActionCamera.STREAM_URL % self.ip_address,
             self.stream_width,
             self.stream_height,
             'bgr24'
