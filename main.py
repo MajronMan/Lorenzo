@@ -6,6 +6,7 @@ import cv2
 from AudioPlayer import AudioPlayer
 import auralizer
 import filters
+from MotionFilter import MotionFilter
 from VideoStream import VideoStream
 from XiaoYiActionCamera import XiaoYiActionCamera
 
@@ -14,9 +15,10 @@ CURRENT_FILTER = "BLUR"
 
 def stream_thread(video_stream, frame, cont):
     while cont[0]:
-        frame[0] = video_stream.read_frame()
-        frame[0] = filters.filters[CURRENT_FILTER](frame[0])
-        cv2.imshow('Video', filters.six_colours(frame[0]))
+        video_data = video_stream.read_frame()
+        cv2.imshow('BLUR', video_data)
+        frame[0] = filters.filters[CURRENT_FILTER](video_data)
+        cv2.imshow('FILTER', filters.six_colours(frame[0]))
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
             cont[0] = False
@@ -43,7 +45,10 @@ if __name__ == "__main__":
     cont = [True]
 
     video_stream = VideoStream(cv2.VideoCapture(0))
-    frame = [video_stream.read_frame()]
+    frame = video_stream.read_frame()
+    filters.registerMotionFilter(MotionFilter(frame.shape))
+
+    frame = [frame]
 
     t1 = threading.Thread(target=stream_thread, args=(video_stream, frame, cont))
     t1.start()

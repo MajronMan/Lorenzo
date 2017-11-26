@@ -36,12 +36,13 @@ class MotionFilter(ImageFilter):
         # show(result, 'dilated')
         img, contours, _ = cv2.findContours(result.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+        bounding_boxes = []
         for contour in contours:
             if self.min_contour_area < cv2.contourArea(contour) < self.max_contour_area:
-                (x, y, w, h) = cv2.boundingRect(contour)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                bounding_boxes.append(cv2.boundingRect(contour))
+                # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-        return result
+        return result, bounding_boxes
 
     def preprocess_frame(self, frame):
         # frame = imutils.resize(frame, width=500)

@@ -8,12 +8,13 @@ import colorsys
 import filters
 
 import time
+from MotionFilter import MotionFilter
 
 SAMPLE_LEN = 1024
 MAX_PIXEL_DELTA = np.sqrt(3) * 256
 prev_frame = None
-CURRENT_SCALE = "phrygian"
-BASE_SOUND = 44
+CURRENT_SCALE = "major"
+BASE_SOUND = 30
 
 
 def octave(x):
@@ -143,8 +144,12 @@ class Auralizer:
         pitches = [new_base]
         for i in range(1, 4):
             if random.random() < (0.2) ** i:
-                pitches.append(self.scale[bounded_add(new_base_ind, 2 * i, 0, len(self.scale)-1)])
+                pitches.append(self.scale[bounded_add(new_base_ind,  2 * i, 0, len(self.scale)-1)])
         return pitches
+
+
+def get_bounding_boxes(frame):
+    processed, boxes = filters.boundingBoxes(frame)
 
 
 auralizer = Auralizer()
