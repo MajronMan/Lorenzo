@@ -16,6 +16,9 @@ CURRENT_FILTER = "BLUR"
 def stream_thread(video_stream, frame, cont):
     while cont[0]:
         video_data = video_stream.read_frame()
+        res, boxes = filters.boundingBoxes(video_data)
+        for b in boxes:
+            cv2.rectangle(video_data, b.coords(), b.ends(), (0, 0, 255), 2)
         cv2.imshow('BLUR', video_data)
         frame[0] = filters.filters[CURRENT_FILTER](video_data)
         cv2.imshow('FILTER', filters.six_colours(frame[0]))

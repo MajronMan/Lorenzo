@@ -6,14 +6,19 @@ import time
 
 
 class AudioPlayer:
-    BPM = 60
+    BPM = 80
 
     def __init__(self):
         self.active_note = None
 
         pygame.midi.init()
+        self.drum_pitch = 30
+        self.drum_vol = 50
+        self.drum_channel = 2
         self.player = pygame.midi.Output(1)
-        self.player.set_instrument(1)
+        self.player.set_instrument(0)
+        self.player.set_instrument(47, self.drum_channel)
+
 
         self.active_chord = None
 
@@ -54,4 +59,6 @@ class AudioPlayer:
     def play_multiple_chords(self, notes):
         for (pitches, volume, duration) in notes:
             self.play_chord(pitches, volume)
+            # self.player.note_on(self.drum_pitch, self.drum_vol, self.drum_channel)
             time.sleep(duration * 60 / AudioPlayer.BPM)
+            # self.player.note_off(self.drum_pitch, self.drum_vol, self.drum_channel)

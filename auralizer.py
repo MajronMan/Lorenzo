@@ -13,7 +13,7 @@ from MotionFilter import MotionFilter
 SAMPLE_LEN = 1024
 MAX_PIXEL_DELTA = np.sqrt(3) * 256
 prev_frame = None
-CURRENT_SCALE = "major"
+CURRENT_SCALE = "japanese"
 BASE_SOUND = 30
 
 
@@ -25,7 +25,8 @@ scales = {
     "minor": [0, 2, 3, 5, 7, 8, 11, 12],
     "major": [0, 2, 4, 5, 7, 9, 11, 12],
     "gypsy": [0, 1, 4, 5, 7, 8, 11, 12],
-    "phrygian": [0, 1, 4, 5, 7, 8, 10, 12]
+    "phrygian": [0, 1, 4, 5, 7, 8, 10, 12],
+    "japanese": [0, 2, 3, 7, 8, 12, 14, 15]
 }
 
 
@@ -51,6 +52,7 @@ rhythms = [
     # [0.25, 0.5, 0.25],
     # [0.25, 0.25, 0.5],
     [0.25, 0.25, 0.25, 0.25],
+    # [0.125, 0.25, 0.25, 0.25, 0.125]
 
 ]
 
@@ -150,9 +152,14 @@ class Auralizer:
 
 def get_bounding_boxes(frame):
     processed, boxes = filters.boundingBoxes(frame)
+    # boxes = sorted(boxes, key=lambda b: -b.area())[:5]
+    boxes = np.array(boxes)
+    maximum = filters.motionFilter.full_frame_area
+    return len(boxes), np.sum((box.area() for box in boxes)) / maximum
 
 
 auralizer = Auralizer()
+prev_vol = [47]
 
 def auralize(video_data, prev_frame):
     if prev_frame is None:
@@ -172,9 +179,11 @@ def auralize(video_data, prev_frame):
     sat = np.mean(hsv[..., 1])
 
     saturation = 47 + int(80 * sat / 256)
-    diff = int(frobenius(video_data, prev_frame) * 100)
+    bblen, bb = get_bounding_boxes(video_data)
+    diff =  int(bb * len(rhythms))#  int(frobenius(video_data, prev_frame) * 100)
     # print(diff)
     # volume = 30 + int(diff * 97)
-    volume = saturation
-    rh = diff % len(rhythms)
+    volume = (prev_vol[0] * 2 + min(127, 47 + int(10* bblen)))//3
+    prev_vol[0] = volume
+    rh = min(diff, len(rhythms)-1)
     return [(auralizer.build_chord(cumulative), volume, rhythms[rh][i]) for i in range(len(rhythms[rh]))]

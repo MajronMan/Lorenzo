@@ -1,5 +1,6 @@
 import cv2
 
+from BoundingBox import BoundingBox
 from ImageFilter import ImageFilter
 
 
@@ -8,10 +9,10 @@ class MotionFilter(ImageFilter):
         self.max_background_age = max_background_age
         self.background_age = max_background_age + 1
 
-        full_frame_area = shape[0] * shape[1]
+        self.full_frame_area = shape[0] * shape[1]
 
-        self.min_contour_area = min_contour_area * full_frame_area
-        self.max_contour_area = max_contour_area * full_frame_area
+        self.min_contour_area = min_contour_area * self.full_frame_area
+        self.max_contour_area = max_contour_area * self.full_frame_area
         self.background_frame = None
         self.last_frame = None
 
@@ -39,7 +40,7 @@ class MotionFilter(ImageFilter):
         bounding_boxes = []
         for contour in contours:
             if self.min_contour_area < cv2.contourArea(contour) < self.max_contour_area:
-                bounding_boxes.append(cv2.boundingRect(contour))
+                bounding_boxes.append(BoundingBox(*cv2.boundingRect(contour)))
                 # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         return result, bounding_boxes
