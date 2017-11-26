@@ -36,13 +36,13 @@ while True:
     # ret, thresh3 = cv2.threshold(frame, 127, 255, cv2.THRESH_TRUNC)
     # ret, thresh4 = cv2.threshold(frame, 127, 255, cv2.THRESH_TOZERO)
     # ret, thresh5 = cv2.threshold(frame, 127, 255, cv2.THRESH_TOZERO_INV)
-    # kernel = np.ones((5, 5), np.float32) / 25
-    # dst = cv2.filter2D(frame, -1, kernel)
-    #
-    # ret, thresh = cv2.threshold(dst, 127, 255, cv2.THRESH_BINARY)
-    #
-    # kernel1 = np.ones((5, 5), np.uint8)
-    # open = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel1)
+    kernel = np.ones((5, 5), np.float32) / 25
+    dst = cv2.filter2D(frame, -1, kernel)
+
+    ret, thresh = cv2.threshold(dst, 127, 255, cv2.THRESH_BINARY)
+
+    kernel1 = np.ones((5, 5), np.uint8)
+    open = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel1)
     # close = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel1)
     #
     #
@@ -70,7 +70,7 @@ while True:
     # xb = cv2.countNonZero(maskb)
     # xg = cv2.countNonZero(maskg)
     # print(xr,xb,xg)
-    cv2.imshow('Video', )
+    cv2.imshow('Video', open)
 
 
     k = cv2.waitKey(5) & 0xFF

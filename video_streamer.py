@@ -1,12 +1,15 @@
 import cv2
 import time
 import numpy as np
+import filters
 
 capture = cv2.VideoCapture(0)
 
+CURRENT_FILTER = "BLUR"
 
 def read_stream():
-    return capture.read()[1]
+    frame = capture.read()[1]
+    return filters.filters[CURRENT_FILTER](frame)
 
 
 def read_period(period, fps):
