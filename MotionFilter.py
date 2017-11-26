@@ -4,10 +4,14 @@ from ImageFilter import ImageFilter
 
 
 class MotionFilter(ImageFilter):
-    def __init__(self, max_background_age=1, min_contour_area=1000):
+    def __init__(self, shape, min_contour_area=0.01, max_contour_area=0.5, max_background_age=1):
         self.max_background_age = max_background_age
         self.background_age = max_background_age + 1
-        self.min_contour_area = min_contour_area
+
+        full_frame_area = shape[0] * shape[1]
+
+        self.min_contour_area = min_contour_area * full_frame_area
+        self.max_contour_area = max_contour_area * full_frame_area
         self.background_frame = None
         self.last_frame = None
 
@@ -25,17 +29,17 @@ class MotionFilter(ImageFilter):
 
         frame_delta = cv2.absdiff(self.background_frame, current)
         # show(frame_delta, 'delta')
-        result = cv2.threshold(frame_delta, 20, 255, cv2.THRESH_BINARY)[1]
+        result = cv2.threshold(frame_delta, 30, 255, cv2.THRESH_BINARY)[1]
         # show(result, 'threshold')
 
-        result = cv2.dilate(result, None, iterations=0)
+        result = cv2.dilate(result, None, iterations=20)
         # show(result, 'dilated')
         img, contours, _ = cv2.findContours(result.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        # for contour in contours:
-        #     if self.min_contour_area < cv2.contourArea(contour) < self.max_contour_area:
-        #         (x, y, w, h) = cv2.boundingRect(contour)
-        # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        for contour in contours:
+            if self.min_contour_area < cv2.contourArea(contour) < self.max_contour_area:
+                (x, y, w, h) = cv2.boundingRect(contour)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         return result
 
