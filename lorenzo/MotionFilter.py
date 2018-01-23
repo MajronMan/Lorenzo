@@ -1,7 +1,7 @@
 import cv2
-
-from BoundingBox import BoundingBox
 from ImageFilter import ImageFilter
+
+from lorenzo.BoundingBox import BoundingBox
 
 
 class MotionFilter(ImageFilter):
@@ -29,27 +29,19 @@ class MotionFilter(ImageFilter):
         self.background_age += 1
 
         frame_delta = cv2.absdiff(self.background_frame, current)
-        # show(frame_delta, 'delta')
         result = cv2.threshold(frame_delta, 30, 255, cv2.THRESH_BINARY)[1]
-        # show(result, 'threshold')
 
         result = cv2.dilate(result, None, iterations=20)
-        # show(result, 'dilated')
         img, contours, _ = cv2.findContours(result.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         bounding_boxes = []
         for contour in contours:
             if self.min_contour_area < cv2.contourArea(contour) < self.max_contour_area:
                 bounding_boxes.append(BoundingBox(*cv2.boundingRect(contour)))
-                # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         return result, bounding_boxes
 
     def preprocess_frame(self, frame):
-        # frame = imutils.resize(frame, width=500)
-        # show(frame, 'resized')
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        # show(frame, 'grayscale')
         frame = cv2.GaussianBlur(frame, (21, 21), 0)
-        # show(frame, 'gaussian')
         return frame

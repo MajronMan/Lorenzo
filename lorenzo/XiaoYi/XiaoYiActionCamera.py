@@ -3,7 +3,8 @@ import socket
 import threading
 
 from FFmpegVideoCapture import FFmpegVideoCapture
-from VideoStream import VideoStream
+
+from lorenzo.VideoStream import VideoStream
 
 
 class XiaoYiActionCamera:

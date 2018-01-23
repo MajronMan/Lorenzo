@@ -1,13 +1,14 @@
 import threading
 import time
+from argparse import ArgumentParser
 
+from auralize import auralize
 import cv2
-
-import auralizer
-import filters
 from AudioPlayer import AudioPlayer
 from MotionFilter import MotionFilter
-from XiaoYiActionCamera import XiaoYiActionCamera
+from VideoStream import VideoStream
+
+from lorenzo import filters
 
 CURRENT_FILTER = "BLUR"
 
@@ -22,16 +23,17 @@ def stream_thread(video_stream, frame, cont):
         frame[0] = filters.filters[CURRENT_FILTER](video_data)
         cv2.imshow('FILTER', filters.six_colours(frame[0]))
         k = cv2.waitKey(1) & 0xFF
-        if k == 27:
+        if k == 27 or cv2.getWindowProperty('FILTER', 0) < 0:
             cont[0] = False
 
 
-def auralizer_thread(player, frame, cont):
+def auralizer_thread(player, frame, cont, current_scale, base_sound):
     prev_frame = frame[0]
     while cont[0]:
         t0 = time.time()
         video_data = frame[0]
-        audio_data = auralizer.auralize(video_data, prev_frame)
+        # print(video_data)
+        audio_data = auralize(video_data, prev_frame, current_scale, base_sound)
         print(audio_data)
         player.play_multiple_chords(audio_data)
         prev_frame = video_data
@@ -40,14 +42,22 @@ def auralizer_thread(player, frame, cont):
 
 DELTA = 60 / AudioPlayer.BPM
 
+
+argparser = ArgumentParser(description='Lorenzo')
+argparser.add_argument('current_scale', type=str,
+                       choices=["minor", "major", "gypsy", "phrygian", "japanese"], help='Specify scale\n')
+argparser.add_argument('base_sound', type=int, help='Specify base sound\n')
+
+
 if __name__ == "__main__":
     player = AudioPlayer()
+
+    args = argparser.parse_args()
 
     prev_frame = None
     cont = [True]
 
-    video_stream = XiaoYiActionCamera().open_stream()
-    # video_stream = VideoStream(cv2.VideoCapture(0))
+    video_stream = VideoStream(cv2.VideoCapture(0))
     frame = video_stream.read_frame()
     filters.registerMotionFilter(MotionFilter(frame.shape))
 
@@ -56,7 +66,7 @@ if __name__ == "__main__":
     t1 = threading.Thread(target=stream_thread, args=(video_stream, frame, cont))
     t1.start()
 
-    t2 = threading.Thread(target=auralizer_thread, args=(player, frame, cont))
+    t2 = threading.Thread(target=auralizer_thread, args=(player, frame, cont, args.current_scale, args.base_sound))
     t2.start()
 
     t1.join()

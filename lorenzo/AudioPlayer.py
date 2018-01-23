@@ -18,7 +18,6 @@ class AudioPlayer:
         self.player.set_instrument(0)
         self.player.set_instrument(47, self.drum_channel)
 
-
         self.active_chord = None
 
     def play(self, notes):
@@ -52,8 +51,6 @@ class AudioPlayer:
             for pitch in pitches:
                 self.player.note_on(pitch, vol)
             self.active_chord = (pitches, volume)
-
-
 
     def play_multiple_chords(self, notes):
         for (pitches, volume, duration) in notes:

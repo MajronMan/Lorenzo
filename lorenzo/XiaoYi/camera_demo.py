@@ -1,8 +1,7 @@
 import cv2
-# import imutils
-
-from MotionFilter import MotionFilter
 from VideoStream import VideoStream
+
+from lorenzo.MotionFilter import MotionFilter
 
 # stream = XiaoYiActionCamera().open_stream()
 stream = VideoStream(cv2.VideoCapture(0))
