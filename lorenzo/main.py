@@ -28,15 +28,13 @@ def stream_thread(video_stream, frame, cont):
 
 
 def auralizer_thread(player, frame, cont, current_scale, base_sound):
-    prev_frame = frame[0]
     while cont[0]:
         t0 = time.time()
         video_data = frame[0]
         # print(video_data)
-        audio_data = auralize(video_data, prev_frame, current_scale, base_sound)
+        audio_data = auralize(video_data, current_scale, base_sound)
         print(audio_data)
         player.play_multiple_chords(audio_data)
-        prev_frame = video_data
         time.sleep(max(0, DELTA - (time.time() - t0)))
 
 
