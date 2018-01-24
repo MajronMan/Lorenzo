@@ -83,7 +83,7 @@ def bounded_add(base, additive, minimum, maximum):
 
 
 def get_bounding_boxes(frame):
-    processed, boxes = filters.boundingBoxes(frame)
+    processed, boxes = filters.bounding_boxes(frame)
     # boxes = sorted(boxes, key=lambda b: -b.area())[:5]
     boxes = np.array(boxes)
     maximum = filters.motionFilter.full_frame_area

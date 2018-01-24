@@ -20,12 +20,12 @@ def blur(frame):
 motionFilter = None
 
 
-def registerMotionFilter(filter):
+def register_motion_filter(filter):
     global motionFilter
     motionFilter = filter
 
 
-def boundingBoxes(frame):
+def bounding_boxes(frame):
     return motionFilter.filter(frame)
 
 filters = {

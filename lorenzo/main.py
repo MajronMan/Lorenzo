@@ -16,7 +16,7 @@ CURRENT_FILTER = "BLUR"
 def stream_thread(video_stream, frame, cont):
     while cont[0]:
         video_data = video_stream.read_frame()
-        res, boxes = filters.boundingBoxes(video_data)
+        res, boxes = filters.bounding_boxes(video_data)
         for b in boxes:
             cv2.rectangle(video_data, b.coords(), b.ends(), (0, 0, 255), 2)
         cv2.imshow('BLUR', video_data)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     video_stream = VideoStream(cv2.VideoCapture(0))
     frame = video_stream.read_frame()
-    filters.registerMotionFilter(MotionFilter(frame.shape))
+    filters.register_motion_filter(MotionFilter(frame.shape))
 
     frame = [frame]
 
